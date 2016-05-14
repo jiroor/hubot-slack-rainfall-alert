@@ -40,6 +40,10 @@ rainfallcheck_param = {
 
 module.exports = (robot) ->
 
+  unless process.env.HUBOT_RAINFALL_ALERT_YAHOO_APP_ID?
+    robot.logger.warning 'Required HUBOT_RAINFALL_ALERT_YAHOO_APP_ID environment.'
+    return
+
   job = new CronJob(
     cronTime: rainfallcheck_param.cron_time
     onTick: ->
@@ -49,10 +53,6 @@ module.exports = (robot) ->
   )
 
   robot.brain.set 'raining', 'false'
-
-  unless process.env.HUBOT_RAINFALL_ALERT_YAHOO_APP_ID?
-    robot.logger.warning 'Required HUBOT_RAINFALL_ALERT_YAHOO_APP_ID environment.'
-    return
 
   robot.hear /^rainfallcheck$/i, (msg) ->
     rainfallCheck robot, msg, true
